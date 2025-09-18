@@ -1,9 +1,10 @@
-use actix_web::{http::header, web, App, HttpServer};
+mod routes;
+use actix_web::{http::header, middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
-
+use routes::health_routes::health_checker_handler;
 #[actix_web::main]
-async fn main(){
+async fn main()->std::io::Result<()>{
      if std::env::var_os("RUST_LOG").is_none() {
         unsafe{
             std::env::set_var("RUST_LOG", "actix_web=info");
@@ -36,16 +37,17 @@ async fn main(){
         .allowed_headers(vec![header::CONTENT_TYPE,header::AUTHORIZATION, header::ACCEPT])
         .supports_credentials();
         App::new()
-            .wrap(cors)
             .app_data(web::Data::new(AppState {db: pool.clone()}))
+            .service(health_checker_handler)
+            // .configure(config)
+            .wrap(cors)
+            .wrap(Logger::default())
 
             // .configure(routes::routes)
     })
-    .bind(("127.0.0.1", 8080))
-    .unwrap()
+    .bind(("127.0.0.1", 8080))?
     .run()
     .await
-    .unwrap();
 }
 
 struct AppState {
