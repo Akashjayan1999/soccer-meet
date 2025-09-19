@@ -49,7 +49,7 @@ create_postgres_db:
 
 use_psql:
 	docker exec -it ${DB_DOCKER_CONTAINER}  psql -U myuser soccerrustdb
-
+80
 create_db_with_psql:
 	docker exec -it ${DB_DOCKER_CONTAINER} psql -U myuser -c "CREATE DATABASE soccerrustdb;"
 
