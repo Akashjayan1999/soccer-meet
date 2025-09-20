@@ -52,7 +52,7 @@ async fn main()->std::io::Result<()>{
     .await
 }
 
-struct AppState {
+pub struct AppState {
     db: Pool<Postgres>
 }
 /*
