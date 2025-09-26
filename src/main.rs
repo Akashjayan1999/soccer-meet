@@ -5,6 +5,8 @@ use actix_web::{http::header, middleware::Logger, web, App, HttpServer};
 use dotenv::dotenv;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use routes::health_routes::health_checker_handler;
+
+use crate::routes::config;
 #[actix_web::main]
 async fn main()->std::io::Result<()>{
      if std::env::var_os("RUST_LOG").is_none() {
@@ -41,7 +43,7 @@ async fn main()->std::io::Result<()>{
         App::new()
             .app_data(web::Data::new(AppState {db: pool.clone()}))
             .service(health_checker_handler)
-            // .configure(config)
+            .service(web::scope("/actix").configure(config::config))
             .wrap(cors)
             .wrap(Logger::default())
 

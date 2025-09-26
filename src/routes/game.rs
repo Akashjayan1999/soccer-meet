@@ -6,6 +6,7 @@ use chrono::Utc;
 use serde_json::json;
 
 
+
 #[get("/games")]
 pub async fn get_games(data: web::Data<AppState>) -> impl Responder {
     let query_result = sqlx::query_as!(
